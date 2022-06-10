@@ -1,0 +1,63 @@
+Sub deleteIrrelevantColumns()
+    Dim currentColumn As Integer
+    Dim columnHeading As String
+
+    'ActiveSheet.Columns("L").Delete
+
+    For currentColumn = ActiveSheet.UsedRange.Columns.Count To 1 Step -1
+
+        columnHeading = ActiveSheet.UsedRange.Cells(1, currentColumn).Value
+
+        'CHECK WHETHER TO KEEP THE COLUMN
+        Select Case columnHeading
+            Case "IP", "DNS", "NetBIOS", "OS", "Title", "Vuln Status", "Type", "Severity", "Last Detected", "CVE ID", "Vendor Reference", "Solution", "Results",  "Category","Associated Ags"
+                'Do nothing
+    
+            Case Else
+                'Delete the rest
+                ActiveSheet.Columns(currentColumn).Delete
+
+        End Select
+        Next
+
+    Dim FileToOpen As Variant
+    Dim OpenBook As Workbook
+    Dim LastColumn As Long
+
+    Dim Item As Variant
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+       'Edit visual
+       Cells.IndentLevel = 1 'Format Cells -> Text Alignment -> Indent (margin)
+       Cells.WrapText = False 'Format Cells -> Text Alignment -> Wrap text
+
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+        Set MR = Range(1 & ":" & LastColumn)
+        For Each cell In MR
+            If cell.Value = "Last Detected" Then cell.EntireColumn.AutoFit
+            If cell.Value = "Solution" Then cell.EntireColumn.Interior.Color = RGB(255, 204, 153)
+            If cell.Value = "Solution" Then cell.ColumnWidth = 50
+            If cell.Value = "Title" Then cell.ColumnWidth = 30
+            If cell.Value = "IP" Then cell.ColumnWidth = 14
+            If cell.Value = "DNS" Then cell.ColumnWidth = 30
+            If cell.Value = "Vendor Reference" Then cell.ColumnWidth = 20
+            If cell.Value = "Results" Then cell.ColumnWidth = 30
+            If cell.Value = "OS" Then cell.ColumnWidth = 30
+    Next cell
+    
+    With ActiveWindow
+        If .FreezePanes Then .FreezePanes = False
+            .SplitColumn = 0
+            .SplitRow = 1
+            .FreezePanes = True
+    End With
+        
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+    For Z = 1 To LastColumn
+    Cells(Z).Font.Bold = True
+    Cells(Z).Interior.Color = RGB(192, 192, 192)
+    Cells(Z).HorizontalAlignment = xlCenter
+    Next Z
+
+End Sub

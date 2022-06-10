@@ -1,0 +1,99 @@
+Sub deleteIrrelevantColumns()
+    Dim currentColumn As Integer
+    Dim columnHeading As String
+
+    'ActiveSheet.Columns("L").Delete
+
+    For currentColumn = ActiveSheet.UsedRange.Columns.Count To 1 Step -1
+
+        columnHeading = ActiveSheet.UsedRange.Cells(1, currentColumn).Value
+
+        'CHECK WHETHER TO KEEP THE COLUMN
+        Select Case columnHeading
+            Case "IP", "DNS", "OS", "Title", "Vuln Status", "Type", "Severity", "Last Detected", "CVE ID", "Vendor Reference", "Solution", "Results",  "Category","Associated Ags"
+                'Do nothing
+    
+            Case Else
+                'Delete the rest
+                ActiveSheet.Columns(currentColumn).Delete
+
+        End Select
+        Next
+
+    Dim FileToOpen As Variant
+    Dim OpenBook As Workbook
+    Dim LastColumn As Long
+
+    Dim Item As Variant
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+       'Edit visual
+       Cells.IndentLevel = 1 'Format Cells -> Text Alignment -> Indent (margin)
+       Cells.WrapText = False 'Format Cells -> Text Alignment -> Wrap text
+
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+        Set MR = Range(1 & ":" & LastColumn)
+        For Each cell In MR
+            If cell.Value = "Last Detected" Then cell.EntireColumn.AutoFit
+            If cell.Value = "Solution" Then cell.EntireColumn.Interior.Color = RGB(255, 204, 153)
+            If cell.Value = "Solution" Then cell.ColumnWidth = 50
+            If cell.Value = "Title" Then cell.ColumnWidth = 30
+            If cell.Value = "IP" Then cell.ColumnWidth = 14
+            If cell.Value = "DNS" Then cell.ColumnWidth = 30
+            If cell.Value = "Vendor Reference" Then cell.ColumnWidth = 20
+            If cell.Value = "Results" Then cell.ColumnWidth = 30
+            If cell.Value = "OS" Then cell.ColumnWidth = 30
+    Next cell
+    
+    With ActiveWindow
+        If .FreezePanes Then .FreezePanes = False
+            .SplitColumn = 0
+            .SplitRow = 1
+            .FreezePanes = True
+    End With
+        
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+    For Z = 1 To LastColumn
+    Cells(Z).Font.Bold = True
+    Cells(Z).Interior.Color = RGB(192, 192, 192)
+    Cells(Z).HorizontalAlignment = xlCenter
+    Next Z
+
+Dim ColNum As Integer
+Dim CWS As Worksheet
+
+Set CWS = ActiveSheet
+ColNum = Application.WorksheetFunction.Match("Associated Ags", CWS.Rows(1), 0)
+
+	Cells(1, ColNum).Value = "vCenter"
+
+            With CWS
+        	LR = .Cells(.Rows.Count, ColNum).End(xlUp).Row
+            End With
+             For i = 2 To LR
+                 CWS.Cells(i, ColNum) = Right(CWS.Cells(i, ColNum).Value, Len(CWS.Cells(i, ColNum).Value) - 10)
+             Next i
+
+
+Dim search As Range
+Dim cnt As Integer
+Dim colOrdr As Variant
+Dim indx As Integer
+
+colOrdr = Array("vCenter", "DNS", "IP", "email", "OS", "Title", "Vuln Status", "Type", "Severity", "Last Detected")  'define column order with header names here
+
+cnt = 1
+
+For indx = LBound(colOrdr) To UBound(colOrdr)
+    Set search = Rows("1:1").Find(colOrdr(indx), LookIn:=xlValues, LookAt:=xlWhole, SearchOrder:=xlByColumns, SearchDirection:=xlNext, MatchCase:=False)
+    If Not search Is Nothing Then
+        If search.Column <> cnt Then
+            search.EntireColumn.Cut
+            Columns(cnt).Insert Shift:=xlToRight
+            Application.CutCopyMode = False
+        End If
+    cnt = cnt + 1
+    End If
+Next indx
+End Sub
