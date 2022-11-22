@@ -1,0 +1,61 @@
+Sub deleteIrrelevantColumns()
+    Dim currentColumn As Integer
+    Dim columnHeading As String
+
+    'ActiveSheet.Columns("L").Delete
+
+    For currentColumn = ActiveSheet.UsedRange.Columns.Count To 1 Step -1
+
+        columnHeading = ActiveSheet.UsedRange.Cells(1, currentColumn).Value
+
+        'CHECK WHETHER TO KEEP THE COLUMN
+        Select Case columnHeading
+            Case "Hostname", "LocalIP", "OSVersion", "AdditionalRemediationAdvisoryUrl", "AdditionalRemediationSteps", "RemediationDetail", "Recommended Remediations"
+                'Do nothing
+    
+            Case Else
+                'Delete the rest
+                ActiveSheet.Columns(currentColumn).Delete
+
+        End Select
+        Next
+
+    Dim FileToOpen As Variant
+    Dim OpenBook As Workbook
+    Dim LastColumn As Long
+
+    Dim Item As Variant
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+       'Edit visual
+       Cells.IndentLevel = 1 'Format Cells -> Text Alignment -> Indent (margin)
+       Cells.WrapText = False 'Format Cells -> Text Alignment -> Wrap text
+
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+        Set MR = Range(1 & ":" & LastColumn)
+        For Each cell In MR
+            If cell.Value = "Recommended Remediations" Then cell.EntireColumn.Interior.Color = RGB(255, 204, 153)
+            If cell.Value = "Recommended Remediations" Then cell.ColumnWidth = 50
+            If cell.Value = "LocalIP" Then cell.ColumnWidth = 14
+            If cell.Value = "Hostname" Then cell.ColumnWidth = 25
+            If cell.Value = "RemediationDetail" Then cell.ColumnWidth = 30
+            If cell.Value = "OSVersion" Then cell.ColumnWidth = 30
+            If cell.Value = "AdditionalRemediationAdvisoryUrl" Then cell.ColumnWidth = 30
+    Next cell
+    
+    With ActiveWindow
+        If .FreezePanes Then .FreezePanes = False
+            .SplitColumn = 0
+            .SplitRow = 1
+            .FreezePanes = True
+    End With
+        
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+    For Z = 1 To LastColumn
+    Cells(Z).Font.Bold = True
+    Cells(Z).Interior.Color = RGB(192, 192, 192)
+    Cells(Z).HorizontalAlignment = xlCenter
+    Next Z
+
+End Sub
