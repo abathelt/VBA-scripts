@@ -1,0 +1,65 @@
+from vb2py.vbfunctions import *
+from vb2py.vbdebug import *
+
+
+
+def deleteIrrelevantColumns():
+    currentColumn = Integer()
+
+    columnHeading = String()
+
+    FileToOpen = Variant()
+
+    OpenBook = Workbook()
+
+    LastColumn = Long()
+
+    Item = Variant()
+    #ActiveSheet.Columns("L").Delete
+    for currentColumn in vbForRange(ActiveSheet.UsedRange.Columns.Count, 1, - 1):
+        columnHeading = ActiveSheet.UsedRange.Cells(1, currentColumn).Value
+        #CHECK WHETHER TO KEEP THE COLUMN
+        select_variable_0 = columnHeading
+        if (select_variable_0 == 'IP') or (select_variable_0 == 'DNS') or (select_variable_0 == 'NetBIOS') or (select_variable_0 == 'OS') or (select_variable_0 == 'Title') or (select_variable_0 == 'Vuln Status') or (select_variable_0 == 'Type') or (select_variable_0 == 'Severity') or (select_variable_0 == 'Last Detected') or (select_variable_0 == 'CVE ID') or (select_variable_0 == 'Vendor Reference') or (select_variable_0 == 'Solution') or (select_variable_0 == 'Results'):
+            #Do nothing
+            pass
+        else:
+            #Delete the rest
+            ActiveSheet.Columns(currentColumn).Delete()
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+    #Edit visual
+    Cells.IndentLevel = 1
+    Cells.WrapText = False
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+    MR = Range(1 + ':' + LastColumn)
+    for cell in MR:
+        if cell.Value == 'Last Detected':
+            cell.EntireColumn.AutoFit()
+        if cell.Value == 'Solution':
+            cell.EntireColumn.Interior.Color = RGB(255, 204, 153)
+        if cell.Value == 'Solution':
+            cell.ColumnWidth = 50
+        if cell.Value == 'Title':
+            cell.ColumnWidth = 30
+        if cell.Value == 'IP':
+            cell.ColumnWidth = 14
+        if cell.Value == 'DNS':
+            cell.ColumnWidth = 30
+        if cell.Value == 'Vendor Reference':
+            cell.ColumnWidth = 20
+        if cell.Value == 'Results':
+            cell.ColumnWidth = 30
+        if cell.Value == 'OS':
+            cell.ColumnWidth = 30
+    with_variable0 = ActiveWindow
+    if with_variable0.FreezePanes:
+        with_variable0.FreezePanes = False
+    with_variable0.SplitColumn = 0
+    with_variable0.SplitRow = 1
+    with_variable0.FreezePanes = True
+    LastColumn = Cells(1, Columns.Count).End(xlToLeft).Column
+    for Z in vbForRange(1, LastColumn):
+        Cells[Z].Font.Bold = True
+        Cells[Z].Interior.Color = RGB(192, 192, 192)
+        Cells[Z].HorizontalAlignment = xlCenter
